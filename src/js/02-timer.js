@@ -12,6 +12,7 @@ const fieldSeconds = document.querySelector("[data-seconds]");
 const currentDate = Date.now();       //Текущая дата
 buttonStart.disabled = true;     // выключил кнопку старт по дефолту
 let timeResult;
+let time;
 const options = {
     enableTime: true,
     time_24hr: true,
@@ -25,17 +26,20 @@ const options = {
       }else{
         buttonStart.disabled = false;
         timeResult = selectedDates[0].getTime() - currentDate;
+        time = selectedDates[0];
          }
       },
   };
 flatpickr(dataPickerEl,options);// Инициализация календаря из либы
 buttonStart.addEventListener("click",addValueToFields)
 
+
 function addLeadingZero(value){
     return String(value).padStart(2,'0');
 }
- 
-function convertMs(timeResult) {
+
+
+ function  convertMs(timeResult) {
     // Number of milliseconds per unit of time
     const second = 1000;
     const minute = second * 60;
@@ -50,18 +54,30 @@ function convertMs(timeResult) {
     const minutes = addLeadingZero(Math.floor(((timeResult % day) % hour) / minute));
     // Remaining seconds
     const seconds = addLeadingZero(Math.floor((((timeResult % day) % hour) % minute) / second));
-  
     return { days, hours, minutes, seconds };
   }
 
+
+ function addTextContent (){
+ const {days,hours,minutes,seconds} = convertMs(time - new Date());
+    fieldDays.textContent = days;
+    fieldHours.textContent = hours;
+    fieldMinutes.textContent = minutes;
+    fieldSeconds.textContent = seconds;
+ }
+
+
+
  function addValueToFields(){
-    setInterval(() => {
-        
+    const intevalId = setInterval(() => {
        
-        fieldDays.textContent = convertMs(timeResult).days
-        fieldHours.textContent = convertMs(timeResult).hours
-        fieldMinutes.textContent = convertMs(timeResult).minutes
-        fieldSeconds.textContent =  convertMs(timeResult).seconds
-    }, 1000);
-}
+      if(timeResult <= 0){
+         return clearInterval(intevalId)
+      }
+       addTextContent(timeResult); 
+       timeResult -= 1;
+       
+       },1000);
+ }
+ 
 
