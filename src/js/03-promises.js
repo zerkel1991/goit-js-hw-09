@@ -6,14 +6,15 @@ const firstDelay = document.querySelector('[name = "delay"]')
 const stepDelay = document.querySelector('[name = "step"]')
 const amount = document.querySelector('[name = "amount"]')
 const submitBtn = document.querySelector("button")
-let fullDelay = Number(firstDelay.value) + Number(stepDelay.value);
+let fullDelay = Number(firstDelay.value);
 form.addEventListener("submit",((event)=>{
   event.preventDefault()
  
   for (let i = 1; i <= amount.value;i++){
-    createPromise(i,fullDelay).then(({position,delay})=>{
+    createPromise(i,fullDelay)
+    .then(({position,delay})=>{
       Notiflix.Notify.success(`✅ Fulfilled promise ${position} in ${delay}ms`)
-      .catch(({position,delay})=>{
+    .catch(({position,delay})=>{
       Notiflix.Notify.failure(`❌ Rejected promise ${position} in ${delay}ms`)
       })
     })
